@@ -8,7 +8,7 @@ public interface DefaultController<T, V> {
 
     ResponseEntity add(T t);
 
-    ResponseEntity update(T t);
+    ResponseEntity update(T t) throws NoSuchFieldException;
 
     ResponseEntity delete(V v);
 }

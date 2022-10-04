@@ -1,5 +1,6 @@
 package com.payment.collection.controller;
 
+import com.payment.collection.controller.exception.NoTransactionFoundError;
 import com.payment.collection.model.Customer;
 import com.payment.collection.service.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -32,15 +33,19 @@ public class CustomerController implements DefaultController<Customer, Long> {
 
     @PutMapping({"/update"})
     @Override
-    public ResponseEntity update(@RequestBody Customer liability) {
-        customerService.save(liability);
-        return new ResponseEntity(customerService.getAll(), HttpStatus.ACCEPTED);
+    public ResponseEntity update(@RequestBody Customer customer) {
+        customerService.save(customer);
+            return new ResponseEntity(customerService.getAll(), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping({"/delete"})
     @Override
-    public ResponseEntity delete(@RequestBody Long id) {
+    public ResponseEntity delete(@RequestParam Long id) {
+        try{
         customerService.delete(id);
-        return new ResponseEntity(customerService.getAll(), HttpStatus.ACCEPTED);
+            return new ResponseEntity(customerService.getAll(), HttpStatus.ACCEPTED);
+        } catch (RuntimeException e){
+            throw new NoTransactionFoundError();
+        }
     }
 }

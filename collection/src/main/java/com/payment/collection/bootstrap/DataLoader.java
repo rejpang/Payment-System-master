@@ -4,22 +4,22 @@ import com.payment.collection.model.Customer;
 import com.payment.collection.model.Liability;
 import com.payment.collection.model.LiabilityDetail;
 import com.payment.collection.repo.CustomerRepository;
-import com.payment.collection.repo.LiabilityRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
-    private final LiabilityRepository liabilityRepository;
     private final CustomerRepository customerRepository;
 
-    public DataLoader(LiabilityRepository liabilityRepository, CustomerRepository customerRepository){
-        this.liabilityRepository = liabilityRepository;
+    public DataLoader(CustomerRepository customerRepository){
         this.customerRepository = customerRepository;
     }
 
@@ -32,12 +32,12 @@ public class DataLoader implements CommandLineRunner {
         Customer customer = new Customer();
         LiabilityDetail liabilityDetail = new LiabilityDetail();
 
-        liability.setId(1L);
-        customer.setId(1L);
+        liability.setLiabilityId(1L);
+        customer.setCustomerId(2L);
         customer.setBalance(BigDecimal.valueOf(5000));
         customer.setName("Rex");
 
-        liabilityDetail.setId(1L);
+        liabilityDetail.setLiabilityDetailId(3L);
         liabilityDetail.setName("Meralco");
         liabilityDetail.setObligation(BigDecimal.valueOf(3000));
         liabilityDetail.setNetAmount(customer.getBalance().subtract(liabilityDetail.getObligation()));
@@ -46,8 +46,11 @@ public class DataLoader implements CommandLineRunner {
         liabilityDetail.setCreatedDate(simpleDateFormat.format(new Date()));
         liabilityDetail.setUpdatedDate(simpleDateFormat.format(new Date()));
 
+        List<Liability> liabilityList = new ArrayList<>();
         liability.setLiabilityDetail(liabilityDetail);
-        customer.getLiabilityList().add(liability);
+        liabilityList.add(liability);
+
+        customer.setLiabilityList(liabilityList);
         customerRepository.save(customer);
 
     }

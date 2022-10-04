@@ -10,4 +10,6 @@ public interface CrudService<T, V> {
 
     void delete(V v);
 
+    T find(V v);
+
 }
